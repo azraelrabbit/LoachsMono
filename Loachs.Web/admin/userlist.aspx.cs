@@ -177,10 +177,11 @@ namespace Loachs.Web
             u.Name = StringHelper.HtmlEncode(txtNickName.Text.Trim());
             u.AvatarUrl = string.Empty;
             u.Displayorder = StringHelper.StrToInt(txtDisplayOrder.Text, 1000);
+            u.Salt = Guid.NewGuid().ToString("n");
 
             if (!string.IsNullOrEmpty(txtPassword.Text.Trim()))
             {
-                u.Password = StringHelper.GetMD5(txtPassword.Text.Trim());
+                u.Password = StringHelper.GetMD5Pwd(txtPassword.Text.Trim(),u.Salt);
             }
 
             if (!string.IsNullOrEmpty(txtPassword.Text.Trim()) && txtPassword.Text != txtPassword2.Text)

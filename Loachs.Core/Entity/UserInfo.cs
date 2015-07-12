@@ -1,4 +1,4 @@
-﻿ 
+﻿
 using System;
 
 using Loachs.Common;
@@ -33,13 +33,15 @@ namespace Loachs.Entity
         private string _avatarurl;
         private int _displayorder;
 
+        private string _salt;
+
         private int _postcount;
         private int _commentcount;
-      
+
         private DateTime _createdate;
 
         #region 非字段
-   
+
         private string _url;
         private string _link;
 
@@ -48,20 +50,21 @@ namespace Loachs.Entity
         /// </summary>
         public string Url
         {
-          
-            get {
-                  string url = string.Empty;
 
-                  if (Utils.IsSupportUrlRewriter == false)
-                  {
-                      url = string.Format("{0}default.aspx?type=author&username={1}", ConfigHelper.SiteUrl, StringHelper.UrlEncode(this.UserName));
-                  }
-                  else
-                  {
-                      return ConfigHelper.SiteUrl + "author/" + StringHelper.UrlEncode(this.UserName) + SettingManager.GetSetting().RewriteExtension;
+            get
+            {
+                string url = string.Empty;
 
-                  }
-                  return Utils.CheckPreviewThemeUrl(url);
+                if (Utils.IsSupportUrlRewriter == false)
+                {
+                    url = string.Format("{0}default.aspx?type=author&username={1}", ConfigHelper.SiteUrl, StringHelper.UrlEncode(this.UserName));
+                }
+                else
+                {
+                    return ConfigHelper.SiteUrl + "author/" + StringHelper.UrlEncode(this.UserName) + SettingManager.GetSetting().RewriteExtension;
+
+                }
+                return Utils.CheckPreviewThemeUrl(url);
             }
         }
 
@@ -84,13 +87,13 @@ namespace Loachs.Entity
         /// </summary>
         public int UserId
         {
-            set { _userid = value; } 
+            set { _userid = value; }
             get { return _userid; }
         }
         /// <summary>
         /// 用户类型 
         /// </summary>
-        public int  Type
+        public int Type
         {
             set { _type = value; }
             get { return _type; }
@@ -163,7 +166,7 @@ namespace Loachs.Entity
             set { _status = value; }
             get { return _status; }
         }
-        
+
         /// <summary>
         /// 统计日志数
         /// </summary>
@@ -197,6 +200,12 @@ namespace Loachs.Entity
             set { _createdate = value; }
             get { return _createdate; }
         }
-  
+
+        public string Salt
+        {
+            get { return _salt; }
+            set { _salt = value; }
+        }
+
     }
 }

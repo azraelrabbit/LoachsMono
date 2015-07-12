@@ -37,6 +37,14 @@ namespace Loachs.Web
             this.CreateCheckCodeImage(GenerateCheckCode());
         }
 
+        static int GetRandomSeed()
+        {
+            byte[] bytes = new byte[4];
+            System.Security.Cryptography.RNGCryptoServiceProvider rng = new System.Security.Cryptography.RNGCryptoServiceProvider();
+            rng.GetBytes(bytes);
+            return BitConverter.ToInt32(bytes, 0);
+        }
+
         /// <summary>
         /// 生成随机数
         /// </summary>
@@ -50,13 +58,13 @@ namespace Loachs.Web
 
             int number;
             char code;
-            string checkCode = PageUtils.VerifyCode;
+            string checkCode = string.Empty;//PageUtils.VerifyCode;
 
-            if (!string.IsNullOrEmpty(checkCode))
-            {
-                return checkCode;
-            }
-            System.Random random = new Random();
+            //if (!string.IsNullOrEmpty(checkCode))
+            //{
+            //    return checkCode;
+            //}
+            System.Random random = new Random(GetRandomSeed());
             for (int i = 0; i < 4; i++)
             {
                 number = random.Next();

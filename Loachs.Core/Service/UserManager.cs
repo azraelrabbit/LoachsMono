@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
+using System.Linq;
 using Loachs.Common;
 using Loachs.Data;
 using Loachs.Entity;
@@ -74,6 +74,7 @@ namespace Loachs.Business
         public static int UpdateUser(UserInfo _userinfo)
         {
             _users.Sort();
+
             return dao.UpdateUser(_userinfo);
         }
 
@@ -155,14 +156,15 @@ namespace Loachs.Business
         /// <returns></returns>
         public static UserInfo GetUser(int userId)
         {
-            foreach (UserInfo user in _users)
-            {
-                if (user.UserId == userId)
-                {
-                    return user;
-                }
-            }
-            return null;
+            //foreach (UserInfo user in _users)
+            //{
+            //    if (user.UserId == userId)
+            //    {
+            //        return user;
+            //    }
+            //}
+            var user = _users.FirstOrDefault(p => p.UserId == userId);
+            return user;
         }
 
         /// <summary>
@@ -191,13 +193,26 @@ namespace Loachs.Business
         /// <returns></returns>
         public static UserInfo GetUser(string userName, string password)
         {
-            foreach (UserInfo user in _users)
+            //foreach (UserInfo user in _users)
+            //{
+            //    if (  user.UserName.ToLower() == userName.ToLower() && user.Password.ToLower() == password.ToLower())
+            //    {
+            //        return user;
+            //    }
+            //}
+            //return null;
+            var user = _users.FirstOrDefault(p => p.UserName.ToLower() == userName.ToLower());
+            if (user != null)
             {
-                if (  user.UserName.ToLower() == userName.ToLower() && user.Password.ToLower() == password.ToLower())
+                var tmpPwd = StringHelper.GetMD5Pwd(password, user.Salt);
+
+                if (user.Password.ToLower() == tmpPwd.ToLower())
                 {
                     return user;
                 }
+
             }
+            
             return null;
         }
     }

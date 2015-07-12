@@ -346,6 +346,23 @@ namespace Loachs.Common
             return System.Web.Security.FormsAuthentication.HashPasswordForStoringInConfigFile(str, "MD5");
 
         }
+
+        /// <summary>
+        /// MD5加密
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string GetMD5Pwd(string pwd,string salt)
+        {
+            if (pwd == null)
+            {
+                pwd = string.Empty;
+            }
+            var str = pwd + salt;
+            return System.Web.Security.FormsAuthentication.HashPasswordForStoringInConfigFile(str, "MD5");
+        }
+
+
         /// <summary>
         /// 返回URL中结尾的文件名
         /// </summary>		

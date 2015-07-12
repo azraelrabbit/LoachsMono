@@ -20,9 +20,9 @@ namespace Loachs.Data.Access
         public int InsertUser(UserInfo _userinfo)
         {
             string cmdText = @" insert into [loachs_users](
-                                [Type],[UserName],[Name],[Password],[Email],[SiteUrl],[AvatarUrl],[Description],[displayorder],[Status],[PostCount],[CommentCount],[CreateDate])
+                                [Type],[UserName],[Name],[Password],[Email],[SiteUrl],[AvatarUrl],[Description],[displayorder],[Status],[PostCount],[CommentCount],[CreateDate],[salt])
                                 values (
-                                @Type,@UserName,@Name,@Password,@Email,@SiteUrl,@AvatarUrl,@Description,@Displayorder,@Status, @PostCount,@CommentCount,@CreateDate )";
+                                @Type,@UserName,@Name,@Password,@Email,@SiteUrl,@AvatarUrl,@Description,@Displayorder,@Status, @PostCount,@CommentCount,@CreateDate,@Salt )";
             SqliteParameter[] prams = { 
                                         SqliteDbHelper.MakeInParam("@Type", DbType.Int32,4, _userinfo.Type),
                                         SqliteDbHelper.MakeInParam("@UserName", DbType.String,50, _userinfo.UserName),
@@ -37,7 +37,7 @@ namespace Loachs.Data.Access
                                         SqliteDbHelper.MakeInParam("@PostCount", DbType.Int32,4, _userinfo.PostCount),
                                         SqliteDbHelper.MakeInParam("@CommentCount", DbType.Int32,4, _userinfo.CommentCount),
                                         SqliteDbHelper.MakeInParam("@CreateDate", DbType.Date,8, _userinfo.CreateDate),
-                                        
+                                         SqliteDbHelper.MakeInParam("@Salt", DbType.String,50, _userinfo.Salt)
                                     };
             int r = SqliteDbHelper.ExecuteNonQuery(CommandType.Text, cmdText, prams);
             if (r > 0)
@@ -67,7 +67,8 @@ namespace Loachs.Data.Access
                                 [Status]=@Status,
                                 [PostCount]=@PostCount,
                                 [CommentCount]=@CommentCount,
-                                [CreateDate]=@CreateDate
+                                [CreateDate]=@CreateDate,
+                                [salt]=@Salt,
                                 where UserId=@UserId";
             SqliteParameter[] prams = { 
                                         SqliteDbHelper.MakeInParam("@Type", DbType.Int32,4, _userinfo.Type),
@@ -84,6 +85,7 @@ namespace Loachs.Data.Access
                                         SqliteDbHelper.MakeInParam("@CommentCount", DbType.Int32,4, _userinfo.CommentCount),
                                         SqliteDbHelper.MakeInParam("@CreateDate", DbType.Date,8, _userinfo.CreateDate),
                                         SqliteDbHelper.MakeInParam("@UserId", DbType.Int32,4, _userinfo.UserId),
+                                         SqliteDbHelper.MakeInParam("@Salt", DbType.String,50, _userinfo.Salt)
                                     };
             return SqliteDbHelper.ExecuteNonQuery(CommandType.Text, cmdText, prams);
         }
@@ -163,7 +165,7 @@ namespace Loachs.Data.Access
                 _userinfo.PostCount = Convert.ToInt32(read["PostCount"]);
                 _userinfo.CommentCount = Convert.ToInt32(read["CommentCount"]);
                 _userinfo.CreateDate = Convert.ToDateTime(read["CreateDate"]);
-             
+                _userinfo.Salt =Convert.ToString(read["Salt"]);
 
                 list.Add(_userinfo);
             }
