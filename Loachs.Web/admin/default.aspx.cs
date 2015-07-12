@@ -16,6 +16,8 @@ using Loachs.Entity;
 using Loachs.Business;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.Security.AccessControl;
+using Loachs.Core.Common;
 
 
 namespace Loachs.Web
@@ -213,22 +215,36 @@ namespace Loachs.Web
         /// <returns></returns>
         private long GetDirectorySize(string dirp)
         {
-            DirectoryInfo mydir = new DirectoryInfo(dirp);
-            foreach (FileSystemInfo fsi in mydir.GetFileSystemInfos())
+            try
             {
-                if (fsi is FileInfo)
+                // LOG.Debug(dirp);
+                DirectoryInfo mydir = new DirectoryInfo(dirp);
+                if (!mydir.Exists)
                 {
-                    FileInfo fi = (FileInfo)fsi;
-                    dirSize += fi.Length;
+                    mydir.Create();
                 }
-                else
+                foreach (FileSystemInfo fsi in mydir.GetFileSystemInfos())
                 {
-                    DirectoryInfo di = (DirectoryInfo)fsi;
-                    string new_dir = di.FullName;
-                    GetDirectorySize(new_dir);
+                    if (fsi is FileInfo)
+                    {
+                        FileInfo fi = (FileInfo)fsi;
+                        dirSize += fi.Length;
+                    }
+                    else
+                    {
+                        DirectoryInfo di = (DirectoryInfo)fsi;
+                        string new_dir = di.FullName;
+                        GetDirectorySize(new_dir);
+                    }
                 }
+                return dirSize;
             }
-            return dirSize;
+            catch (Exception ex)
+            {
+                LOG.Error(ex);
+                return 0;
+            }
+
         }
 
 
@@ -240,22 +256,34 @@ namespace Loachs.Web
         /// <returns></returns>
         private int GetDirectoryCount(string dirp)
         {
-            DirectoryInfo mydir = new DirectoryInfo(dirp);
-            foreach (FileSystemInfo fsi in mydir.GetFileSystemInfos())
+            try
             {
-                if (fsi is FileInfo)
+                DirectoryInfo mydir = new DirectoryInfo(dirp);
+                if (!mydir.Exists)
                 {
-                    //   FileInfo fi = (FileInfo)fsi;
-                    UpfileCount += 1;
+                    mydir.Create();
                 }
-                else
+                foreach (FileSystemInfo fsi in mydir.GetFileSystemInfos())
                 {
-                    DirectoryInfo di = (DirectoryInfo)fsi;
-                    string new_dir = di.FullName;
-                    GetDirectoryCount(new_dir);
+                    if (fsi is FileInfo)
+                    {
+                        //   FileInfo fi = (FileInfo)fsi;
+                        UpfileCount += 1;
+                    }
+                    else
+                    {
+                        DirectoryInfo di = (DirectoryInfo)fsi;
+                        string new_dir = di.FullName;
+                        GetDirectoryCount(new_dir);
+                    }
                 }
+                return UpfileCount;
             }
-            return UpfileCount;
+            catch (Exception ex)
+            {
+                LOG.Error(ex);
+                return 0;
+            }
         }
 
         protected void btnCategory_Click(object sender, EventArgs e)
@@ -400,7 +428,7 @@ namespace Loachs.Web
 
                 }
             }
-            catch(Exception  ex)
+            catch (Exception ex)
             {
 
             }
